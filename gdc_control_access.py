@@ -28,7 +28,7 @@ def main():
         elif results.type == "ssm_centric":
             data = get_ssm_centric(data)
 
-        elif results.type == "ssm_occurrence":
+        elif results.type == "ssm_occurrence_centric":
             data = get_ssm_occurrence(data)
 
     with open(results.output,'w') as fp:
