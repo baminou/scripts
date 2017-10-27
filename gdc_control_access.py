@@ -53,7 +53,6 @@ def get_gene_centric(data):
                 ssm_id = data.get('case')[i].get('ssm')[y].get('ssm_id')
                 project = data.get('case')[i].get('project').get('project_id')
                 data.get('case')[i].get('ssm')[y].get('observation')[z]['access'] = get_access(project,ssm_id)
-                data.get('case')[i].get('ssm')[y].get('observation')[z]['project_id'] = project
     return data
 
 def get_case_centric(data):
@@ -72,8 +71,7 @@ def get_case_centric(data):
             for z in xrange(0,len(data.get('gene')[i].get('ssm')[y].get('observation'))):
                 ssm_id = data.get('gene')[i].get('ssm')[y]['ssm_id']
                 project = data.get('project').get('project_id')
-                data.get('gene')[i].get('ssm')[y].get('observation')[z]['access'] = get_access(project, ssm_id)
-                data.get('gene')[i].get('ssm')[y].get('observation')[z]['project_id'] = project
+                data.get('gene')[i].get('ssm')[y].get('observation')[z]['acl'] = get_access(project, ssm_id)
     return data
 
 def get_ssm_centric(data):
@@ -91,8 +89,7 @@ def get_ssm_centric(data):
 
         for z in xrange(0,len(data.get('occurrence')[i].get('case').get('observation'))):
             project = data.get('occurrence')[i].get('case').get('project').get('project_id')
-            data.get('occurrence')[i].get('case').get('observation')[z]['access'] = get_access(project, ssm_id)
-            data.get('occurrence')[i].get('case').get('observation')[z]['project_id'] = project
+            data.get('occurrence')[i].get('case').get('observation')[z]['acl'] = get_access(project, ssm_id)
     return data
 
 def get_ssm_occurrence(data):
@@ -109,8 +106,7 @@ def get_ssm_occurrence(data):
     data.get('case').get('project')['disease_type'] = disease_type
 
     for i in xrange(0,len(data.get('case').get('observation'))):
-        data.get('case').get('observation')[i]['access'] = get_access(project, ssm_id)
-        data.get('case').get('observation')[i]['project_id'] = project
+        data.get('case').get('observation')[i]['acl'] = get_access(project, ssm_id)
 
     return data
 
@@ -142,9 +138,9 @@ def get_access(project_name, ssm_id):
         if ssm_id[0].isdigit():
             return 'open'
         else:
-            return 'control'
+            return project_name
     elif project_name in forced_controlled_projects():
-        return 'control'
+        return project_name
     else:
         return 'open'
 
