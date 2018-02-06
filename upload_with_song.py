@@ -4,11 +4,31 @@
 import argparse
 import json
 import os
-from overture_song.model import ApiConfig
+from overture_song.model import ApiConfig, Manifest, ManifestEntry
 from overture_song.client import Api, ManifestClient, StudyClient
 from overture_song.tools import FileUploadClient
+from overture_song.utils import write_object, setup_output_file_path
 import subprocess
 import requests
+
+
+def create_manifest(api,analysis_id):
+    manifest = Manifest(analysis_id)
+    for file_object in api.get_analysis_files(analysis_id):
+        manifest_entry = ManifestEntry.create_manifest_entry(file_object)
+        manifest_entry.fileName = './'+manifest_entry.fileName
+        manifest.add_entry(manifest_entry)
+    return manifest
+
+def write_object(obj, output_file_path, overwrite=False):
+    setup_output_file_path(output_file_path)
+    if os.path.exists(output_file_path):
+        if os.path.isfile(output_file_path):
+            if overwrite:
+                os.remove(output_file_path)
+
+    with open(output_file_path, 'w') as fh:
+        fh.write(str(obj))
 
 def main():
     parser = argparse.ArgumentParser(description='Generate a song payload using minimal arguments')
@@ -37,9 +57,12 @@ def main():
 
     manifest_filename = client.analysis_id+'.manifest.txt'
     manifest_client = ManifestClient(api)
-    manifest_client.create_manifest(client.analysis_id,os.path.join(os.getcwd(),manifest_filename))
+    manifest = create_manifest(api,client.analysis_id)
 
-    subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(os.getcwd(),manifest_filename)])
+    with open(manifest_filename, 'w') as fh:
+        fh.write(str(manifest))
+
+    subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(os.getcwd(),manifest_filename), '--force'])
 
     #client.publish()
 
