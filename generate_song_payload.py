@@ -39,12 +39,13 @@ def main():
     json_payload['experiment']['libraryStrategy'] = results.library_strategy
     json_payload['experiment']['pairedEnd'] = results.paired_end
 
-    json_payload['sample'] = {}
-    json_payload['sample']['sampleSubmitterId'] = icgc.get_sample_submitter_id_from_donor_id(results.donor_id)
-    json_payload['sample']['donor'] = get_donor_info(results.donor_id)
-    json_payload['sample']['specimen'] = get_specimen_info(results.donor_id)
-    json_payload['sample']['sampleType'] = results.sample_type
-    json_payload['files'] = files
+    json_payload['sample'] = []
+    json_payload['sample'].append({})
+    json_payload['sample'][0]['sampleSubmitterId'] = icgc.get_sample_submitter_id_from_donor_id(results.donor_id)
+    json_payload['sample'][0]['donor'] = get_donor_info(results.donor_id)
+    json_payload['sample'][0]['specimen'] = get_specimen_info(results.donor_id)
+    json_payload['sample'][0]['sampleType'] = results.sample_type
+    json_payload['file'] = files
 
     with open(results.output,'w') as f:
         json.dump(json_payload,f,indent=4,sort_keys=True)

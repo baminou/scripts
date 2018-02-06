@@ -68,7 +68,10 @@ def create_job_json(oxog_job_file, snv, sv, indel,out_dir=None):
     job_json['indel_padding'] = int(indel)
     job_json['aliquot_id'] = json_data.get('tumors')[0].get('aliquot_id')
 
-    job_json['donor_id'] = get_donor_id_from_submitted_donor_id(json_data.get('project_code'),json_data.get('submitter_donor_id'))
+    job_json['donor'] = {}
+    job_json.get('donor')['id'] = get_donor_id_from_submitted_donor_id(json_data.get('project_code'),json_data.get('submitter_donor_id'))
+    job_json.get('donor')['submitter_id'] = json_data['submitter_donor_id']
+    job_json.get('donor')['gender'] = get_donor(job_json.get('donor')['id']).get('gender')
 
     sample = download_pcawg_samples()[job_json.get('donor')['submitter_id']]
     job_json['sample_submitter_id'] = sample['icgc_sample_id']
