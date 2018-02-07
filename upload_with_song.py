@@ -65,9 +65,9 @@ def main():
     subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(os.getcwd(),manifest_filename), '--force'])
 
     publish_response = api.publish(client.analysis_id)
-    requests.put('http://10.10.0.210:8080/studies/PAEN-AU/analysis/publish/ec575f11-0c17-11e8-8020-7f471767d4bb',
+    requests.put(results.server_url+'/studies/'+results.study_id+'/analysis/publish/'+client.analysis_id,
                  headers={"Accept": "application/json", "Content-Type": "application/json",
-                          "Authorization": "Bearer d89fb4dd-19a4-40dd-acf5-eafcc8bca80b"})
+                          "Authorization": "Bearer "+results.access_token})
 
 if __name__ == "__main__":
     main()
