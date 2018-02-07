@@ -35,6 +35,7 @@ def main():
     parser.add_argument('-s', '--study-id', dest="study_id", help="Study ID", required=True)
     parser.add_argument('-u', '--server-url', dest="server_url", help="Server URL", required=True)
     parser.add_argument('-p', '--payload', dest="payload", help="JSON Payload", required=True)
+    parser.add_argument('-o', '--output', dest="output", help="Output manifest file", required=True)
     parser.add_argument('-t', '--access-token', dest="access_token", default=os.environ.get('ACCESSTOKEN',None),help="Server URL")
     results = parser.parse_args()
 
@@ -55,7 +56,7 @@ def main():
     api.save(client.upload_id, ignore_analysis_id_collisions=True)
     client.save()
 
-    manifest_filename = client.analysis_id+'.manifest.txt'
+    manifest_filename = results.output
     manifest_client = ManifestClient(api)
     manifest = create_manifest(api,client.analysis_id)
 
